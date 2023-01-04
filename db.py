@@ -2,7 +2,7 @@ from deta import Deta
 import json
 from pprint import pprint
 
-DETA_KEY = "a07krzzj_P23BASQQrBmsfNHVG9TGCVjSNtoU1Pme"
+DETA_KEY = "DETA_KEY"
 
 deta = Deta(DETA_KEY)
 
