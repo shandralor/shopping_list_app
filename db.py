@@ -1,8 +1,12 @@
 from deta import Deta
 import json
 from pprint import pprint
+import os
+from dotenv import load_dotenv
 
-DETA_KEY = "a07krzzj_P23BASQQrBmsfNHVG9TGCVjSNtoU1Pme"
+load_dotenv(".env")
+
+DETA_KEY = os.getenv("DETA_KEY")
 
 deta = Deta(DETA_KEY)
 
@@ -41,7 +45,7 @@ shopping_list_update = {
 
 
 
-sl.update(shopping_list_update, "1")
+#sl.update(shopping_list_update, "1")
 #enter_shopping_list_items(weeknumber, title, shopping_list)
 
 pprint(get_shopping_list(weeknumber))

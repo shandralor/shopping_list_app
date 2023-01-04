@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime, date
 import calendar
 from isoweek import Week
-from deta import Deta
+import db as db
 
 #---SETTINGS---#
 page_title = "Shopping List App"
@@ -61,7 +61,7 @@ with st.form("entry_form", clear_on_submit=True):
         for key, value in shopping_list.items():
             
             
-            if st.session_state[key] is not '':
+            if st.session_state[key] != '':
                 items = st.session_state[key].split(",")
                 for item in items:
                     item = item.strip()
