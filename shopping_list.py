@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 from datetime import datetime, date
 import calendar
 from isoweek import Week
@@ -23,7 +24,6 @@ months = list(calendar.month_name[1:])
 week_number = date(year, month, day).isocalendar()[1]
 week = Week(year, week_number)
 week_plus1 = Week(year, week_number+1)
-
 
 
 #---DICT INIT---#
@@ -54,47 +54,66 @@ key_dict = {
     'spices_and_cond': [], 
     'frozen': []
     }
-  
+
+#---NAV BARS---#
+nav_menu = option_menu(
+    menu_title = None,
+    options = ["Enter shopping list", "Check current shopping list"],
+    icons = ["pencil-square", "list-task" ],
+    orientation = "horizontal"
+) 
 
 #---INPUT FORM---#
+if nav_menu == "Enter shopping list":
+    st.header(f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
 
-st.header(f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
-
-with st.form("entry_form", clear_on_submit=True):
-    st.subheader(f"Enter item for shopping list: ")
-    
-    for k, value in shopping_list.items():
-        st.text_input(f"{shopping_list[k]['title']}:", key=k)
+    with st.form("entry_form", clear_on_submit=True):
+        st.subheader(f"Enter item for shopping list: ")
+        
+        for k, value in shopping_list.items():
+            st.text_input(f"{shopping_list[k]['title']}:", key=k)
+                    
+        "---"
+        submitted = st.form_submit_button("Save shopping list items")     
+        if submitted:
+            if db.get_shopping_list(week_number):
                 
-    "---"
-    submitted = st.form_submit_button("Save shopping list items")     
-    if submitted:
-        if db.get_shopping_list(week_number):
-            
-            for key in key_dict:
-                update_dict = {}
-                if st.session_state[key] != '':
+                for key in key_dict:
+                    update_dict = {}
+                    if st.session_state[key] != '':
+                            items = st.session_state[key].split(",")
+                            for item in items:
+                                item = item.strip()
+                            update_dict[key] = items                  
+                            db.update_shopping_list(str(week_number), update_dict)
+                
+            else:     
+                period =  f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}"  
+                
+                for key, value in shopping_list.items():                
+                    
+                    if st.session_state[key] != '':
                         items = st.session_state[key].split(",")
                         for item in items:
                             item = item.strip()
-                        update_dict[key] = items                  
-                        db.update_shopping_list(str(week_number), update_dict)
-            
-        else:     
-            period =  f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}"  
-            
-            for key, value in shopping_list.items():                
-                
-                if st.session_state[key] != '':
-                    items = st.session_state[key].split(",")
-                    for item in items:
-                        item = item.strip()
-                        shopping_list[key]['items'].append(item)                 
-                db.enter_shopping_list_items(week_number, period, shopping_list)      
-                
+                            shopping_list[key]['items'].append(item)                 
+                    db.enter_shopping_list_items(week_number, period, shopping_list)      
+
+if nav_menu == "Check current shopping list":
+    
+    current_shopping_list = db.get_shopping_list(week_number)
+    
+    st.header(current_shopping_list["title"])         
+    "---"
+    for key, value in current_shopping_list["shopping_list"].items():
+        st.subheader(value["title"])
+        for item in value["items"]:
+            st.write(item)
+        "----"         
+           
      
 
-pprint(db.get_shopping_list(week_number))
+
 
 
 
