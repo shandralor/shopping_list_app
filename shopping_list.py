@@ -3,6 +3,7 @@ from datetime import datetime, date
 import calendar
 from isoweek import Week
 import db as db
+from pprint import pprint
 
 #---SETTINGS---#
 page_title = "Shopping List App"
@@ -40,12 +41,25 @@ shopping_list = {
     "frozen" : {"title" : "Frozen", "items" : []}
     }
 
-
+key_dict = {
+    'fruit_and_veg': [], 
+    'meat_and_fish': [], 
+    'housekeeping': [], 
+    'carbs': [], 
+    'snacks': [], 
+    'dairy': [], 
+    'personal_care': [], 
+    'pets': [], 
+    'beverages': [], 
+    'spices_and_cond': [], 
+    'frozen': []
+    }
+  
 
 #---INPUT FORM---#
 
 st.header(f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
-"---"
+
 with st.form("entry_form", clear_on_submit=True):
     st.subheader(f"Enter item for shopping list: ")
     
@@ -55,51 +69,33 @@ with st.form("entry_form", clear_on_submit=True):
     "---"
     submitted = st.form_submit_button("Save shopping list items")     
     if submitted:
-        
-        period =  f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}"  
-        
-        for key, value in shopping_list.items():
+        if db.get_shopping_list(week_number):
             
+            for key in key_dict:
+                update_dict = {}
+                if st.session_state[key] != '':
+                        items = st.session_state[key].split(",")
+                        for item in items:
+                            item = item.strip()
+                        update_dict[key] = items                  
+                        db.update_shopping_list(str(week_number), update_dict)
             
-            if st.session_state[key] != '':
-                items = st.session_state[key].split(",")
-                for item in items:
-                    item = item.strip()
-                    shopping_list[key]['items'].append(item)
-            st.write(len(shopping_list[key]['items']))        
+        else:     
+            period =  f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}"  
             
-        # categories = {categorie: st.session_state[categorie] for categorie in categories}
-        
-        # shopping_list = {value['items'] = st.session_state[key] for key, value in shopping_list.items()}
-        # # for key, value in enumerate(categories):
-        #     if categories[value]:
-        #         st.write(value)
-        #         items = categories[value].split(",")
-        #         for item in items:
-        #             item = item.strip()
-        #             shopping_list[value].append(item)
-            
-            
-            # if categories[value]:
-            #     st.write(f"--{categories[value]}")
-        # shopping_list.update(categories)
-        
+            for key, value in shopping_list.items():                
+                
+                if st.session_state[key] != '':
+                    items = st.session_state[key].split(",")
+                    for item in items:
+                        item = item.strip()
+                        shopping_list[key]['items'].append(item)                 
+                db.enter_shopping_list_items(week_number, period, shopping_list)      
+                
+     
 
-st.write("Shopping List")
-st.write(shopping_list)
-# for key,value in shopping_list.items():
-           
-#             st.write(value['items'])
+pprint(db.get_shopping_list(week_number))
 
 
 
 
-#categories = ["Fruit and Veggies", 
-#               "Fresh meat and fish", 
-#               "Housekeeping supplies", 
-#               "Potatoes, rice, pasta, etc", 
-#               "Snacks", "Dairy", "Personal care", 
-#               "Pets", 
-#               "Beverages", 
-#               "Spices and condiments", 
-#               "Frozen"]
