@@ -11,15 +11,24 @@ page_title = "Weekly dinner and shopping app"
 page_icon = ":pouch:"
 layout = "centered"
 
-#---PAGE CONFIG---#
 
+#---PAGE CONFIG---#
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(f"{page_title} {page_icon}")
+
+#---STREAMLIT CONFIG HIDE---#
+hide_st_style = """<style>
+                #MainMenu {visibility : hidden;}
+                footer {visibility : hidden;}
+                header {visibility : hidden;}
+                </style>
+                """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 #---PERIOD VALUES---#
 year = datetime.today().year
 month = datetime.today().month
-day = datetime.today().day
+day = datetime.today().day+4
 months = list(calendar.month_name[1:])
 week_number = date(year, month, day).isocalendar()[1]
 week = Week(year, week_number)
@@ -102,16 +111,20 @@ if nav_menu == "Enter shopping list":
 if nav_menu == "Check current shopping list":
     
     current_shopping_list = db.get_shopping_list(week_number)
-        
-    st.subheader(current_shopping_list["title"])         
-    "---"
-        
-    for k, value in current_shopping_list["shopping_list"].items():
-        st.subheader(value["title"])
-        for item in value["items"]:
-            st.button(label = item, on_click=db.remove_item_shopping_list, args= (str(week_number), k, item))
-        "----"    
-
+    
+    if current_shopping_list:
+       
+        st.subheader(current_shopping_list["title"])         
+        "---"
+        st.caption("Click an item to remove it from this weeks list")
+        "---" 
+        for k, value in current_shopping_list["shopping_list"].items():
+            st.subheader(value["title"])
+            for item in value["items"]:
+                st.button(label = item, on_click=db.remove_item_shopping_list, args= (str(week_number), k, item))
+            "----"    
+    else:
+        st.subheader(f"You have not created a shopping list yet for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
 if nav_menu == "Weekly recipes":
     
     st.subheader("This week's recipes:")     

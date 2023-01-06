@@ -2,11 +2,11 @@ from deta import Deta
 import json
 from pprint import pprint
 import os
-from dotenv import load_dotenv
 
-load_dotenv(".env")
+import streamlit as st
 
-DETA_KEY = os.getenv("DETA_KEY")
+
+DETA_KEY = st.secrets.DETA_KEY
 
 deta = Deta(DETA_KEY)
 
