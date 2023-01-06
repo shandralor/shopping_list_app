@@ -130,7 +130,9 @@ if nav_menu == "Current Week":
             st.subheader(f"You have not created a shopping list yet for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
 if nav_menu == "Weekly recipes":
     
-    st.subheader("This week's recipes:")     
+    st.subheader("This week's recipes:")   
+    st.markdown("This page will hold a clickable collection of recipes. \
+                When you select one the idea is to both have it appear in a list on the first page and automatically add the ingredients to the shopping list.")  
            
      
 
