@@ -80,7 +80,7 @@ if nav_menu == "Current Week":
 
     with col1:
         with st.form("entry_form", clear_on_submit=True):
-            st.subheader(f"Enter item for shopping list: ")
+            st.caption(f"Please enter items, separated by commas")
             
             for k, value in shopping_list.items():
                 st.text_input(f"{shopping_list[k]['title']}:", key=k)
@@ -119,7 +119,7 @@ if nav_menu == "Current Week":
         
                  
            
-            st.subheader("Click an item to remove it from this weeks list")
+            st.caption("Click an item to remove it from this weeks list")
             
             for k, value in current_shopping_list["shopping_list"].items():
                 #st.subheader(value["title"])
