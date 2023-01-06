@@ -19,6 +19,7 @@ def get_shopping_list(period):
     return sl.get(str(period))
 
 
+
 def update_shopping_list(weeknumber, update_dict):
     for key, value in update_dict.items():
         print(f"{key} {value} ")
@@ -28,4 +29,16 @@ def update_shopping_list(weeknumber, update_dict):
     
         sl.update(shopping_list_update_line, weeknumber)
     
+def remove_item_shopping_list(weeknumber, key, item_to_remove):
+        shopping_list_to_change = get_shopping_list(weeknumber)["shopping_list"][key]['items']
+        shopping_list_to_change.remove(item_to_remove)
+        print(shopping_list_to_change)
+        
+        shopping_list_update_line = {
+            f"shopping_list.{key}.items": shopping_list_to_change
+            }
+    
+        sl.update(shopping_list_update_line, weeknumber)
 
+
+# remove_item_shopping_list(1, "beverages", "milk")

@@ -7,7 +7,7 @@ import db as db
 from pprint import pprint
 
 #---SETTINGS---#
-page_title = "Shopping List App"
+page_title = "Weekly dinner and shopping app"
 page_icon = ":pouch:"
 layout = "centered"
 
@@ -58,8 +58,8 @@ key_dict = {
 #---NAV BARS---#
 nav_menu = option_menu(
     menu_title = None,
-    options = ["Enter shopping list", "Check current shopping list"],
-    icons = ["pencil-square", "list-task" ],
+    options = ["Enter shopping list", "Check current shopping list", "Weekly recipes"],
+    icons = ["pencil-square", "list-task", "cup-straw" ],
     orientation = "horizontal"
 ) 
 
@@ -102,14 +102,19 @@ if nav_menu == "Enter shopping list":
 if nav_menu == "Check current shopping list":
     
     current_shopping_list = db.get_shopping_list(week_number)
-    
-    st.header(current_shopping_list["title"])         
+        
+    st.subheader(current_shopping_list["title"])         
     "---"
-    for key, value in current_shopping_list["shopping_list"].items():
+        
+    for k, value in current_shopping_list["shopping_list"].items():
         st.subheader(value["title"])
         for item in value["items"]:
-            st.write(item)
-        "----"         
+            st.button(label = item, on_click=db.remove_item_shopping_list, args= (str(week_number), k, item))
+        "----"    
+
+if nav_menu == "Weekly recipes":
+    
+    st.subheader("This week's recipes:")     
            
      
 
