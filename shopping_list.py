@@ -75,7 +75,7 @@ nav_menu = option_menu(
 #---INPUT FORM---#
 if nav_menu == "Current Week":
     
-    st.header(f"Shopping list for  {week.thursday()} to Wednesday {week_plus1.wednesday()}")
+    st.header(f"thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
     col1, col2 = st.columns([4,4], gap = "medium")
 
     with col1:
