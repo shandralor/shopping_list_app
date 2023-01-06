@@ -79,8 +79,9 @@ if nav_menu == "Current Week":
     col1, col2 = st.columns([4,4], gap = "medium")
 
     with col1:
+        st.caption(f"Please enter items, separated by commas")
         with st.form("entry_form", clear_on_submit=True):
-            st.caption(f"Please enter items, separated by commas")
+            
             
             for k, value in shopping_list.items():
                 st.text_input(f"{shopping_list[k]['title']}:", key=k)
