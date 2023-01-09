@@ -148,6 +148,7 @@ if nav_menu == "Weekly recipes":
             st.caption("This page will hold a clickable collection of recipes. \
                 When you select one the idea is to both have it appear in a list on the first page and automatically add the ingredients to the shopping list.")
         else:
+            st.caption("Click on a recipe to see the instructions or add the ingredients to the shopping list")
             for recipe in db.get_recipe_status():
                 with st.expander(recipe["key"]):
                     "---"
@@ -194,6 +195,7 @@ if nav_menu == "Weekly recipes":
            
     with col3:
         st.subheader("Recipe List: " )
+        st.caption("Click a recipe to add it to this weeks list")
         for recipe in db.get_recipe_status("b"):
             st.button(label = recipe["key"],key = f'{recipe["key"]}f', on_click=db.update_recipe_status, args=(recipe["key"],))
                 
