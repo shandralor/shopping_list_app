@@ -11,14 +11,14 @@ DETA_KEY = st.secrets.DETA_KEY
 deta = Deta(DETA_KEY)
 
 sl = deta.Base("sl")
+recipes = deta.Base("recipes")
 
+#---SHOPPING LIST FUNCTIONS---#
 def enter_shopping_list_items(weeknumber, title, shopping_list):
     return sl.put({"key" : str(weeknumber),"title":title, "shopping_list" :shopping_list})
 
 def get_shopping_list(period):
     return sl.get(str(period))
-
-
 
 def update_shopping_list(weeknumber, update_dict):
     for key, value in update_dict.items():
@@ -40,5 +40,31 @@ def remove_item_shopping_list(weeknumber, key, item_to_remove):
     
         sl.update(shopping_list_update_line, weeknumber)
 
+#---RECIPE FUNCTIONS
 
-# remove_item_shopping_list(1, "beverages", "milk")
+def get_recipes():
+    return recipes.fetch().items, len(recipes.fetch().items)
+
+def enter_recipe(name, ingredients, instructions, active=False):
+    return recipes.put({"key" : name,"ingredients" : ingredients, "instructions" :instructions, "active" : active})
+
+def get_recipe_status(col_nr = "a"):
+    needed_recipe_list = []
+    if col_nr =="a":
+        for recipe in get_recipes()[0]:
+            if recipe["active"] == True:
+                needed_recipe_list.append(recipe)
+    elif col_nr =="b":
+        for recipe in get_recipes()[0]:
+            if recipe["active"] == False:
+                needed_recipe_list.append(recipe)
+    return needed_recipe_list
+
+def get_recipe(key):
+    return recipes.get(key)
+#print((get_active_recipes()))
+
+# for recipe in get_recipes()[0]:
+#     print(recipe["key"])
+
+#enter_recipe("Cheesecake", {"rice" : "200 g", "feta cheese" : "150 g"}, {1 : "cook the rice", 2 : "mix rice with feta"})

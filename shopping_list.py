@@ -35,7 +35,7 @@ week = Week(year, week_number)
 week_plus1 = Week(year, week_number+1)
 
 
-#---DICT INIT---#
+#---DICT AND LIST INIT---#
 shopping_list = {
     "fruit_and_veg" : {"title" : "Fruit and Veggies", "items" : []},
     "meat_and_fish" : {"title" :"Fresh meat and fish", "items" : []},
@@ -64,6 +64,16 @@ key_dict = {
     'frozen': []
     }
 
+ingredients_dict = {
+    }
+
+instructions_dict = {
+    }
+
+
+#---FUNCTIONS---#
+
+
 #---NAV BARS---#
 nav_menu = option_menu(
     menu_title = None,
@@ -81,13 +91,12 @@ if nav_menu == "Current Week":
     with col1:
         st.caption(f"Please enter items, separated by commas")
         with st.form("entry_form", clear_on_submit=True):
-            
-            
+                        
             for k, value in shopping_list.items():
                 st.text_input(f"{shopping_list[k]['title']}:", key=k)
-                        
             "---"
-            submitted = st.form_submit_button("Save shopping list items")     
+            
+            submitted = st.form_submit_button("Save shopping list items", type = "primary")     
             if submitted:
                 if db.get_shopping_list(week_number):
                     
@@ -99,10 +108,8 @@ if nav_menu == "Current Week":
                                     item = item.strip()
                                 update_dict[key] = items                  
                                 db.update_shopping_list(str(week_number), update_dict)
-                    
                 else:     
                     period =  f"Shopping list for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}"  
-                    
                     for key, value in shopping_list.items():                
                         
                         if st.session_state[key] != '':
@@ -117,9 +124,6 @@ if nav_menu == "Current Week":
         current_shopping_list = db.get_shopping_list(week_number)
         
         if current_shopping_list:
-        
-                 
-           
             st.caption("Click an item to remove it from this weeks list")
             
             for k, value in current_shopping_list["shopping_list"].items():
@@ -129,13 +133,68 @@ if nav_menu == "Current Week":
                 
         else:
             st.subheader(f"You have not created a shopping list yet for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
+            
 if nav_menu == "Weekly recipes":
+    col1, col2, col3 = st.columns([3,3,4], gap = "medium")
     
-    st.subheader("This week's recipes:")   
-    st.markdown("This page will hold a clickable collection of recipes. \
-                When you select one the idea is to both have it appear in a list on the first page and automatically add the ingredients to the shopping list.")  
+    
+    with col1:
+        st.subheader("This week's recipes:")   
+        
+        if len(db.get_recipe_status()) < 1:
+            st.caption("This page will hold a clickable collection of recipes. \
+                When you select one the idea is to both have it appear in a list on the first page and automatically add the ingredients to the shopping list.")
+        else:
+            for recipe in db.get_recipe_status():
+                with st.expander(recipe["key"]):
+                    st.write("expander test working")
+                    st.button(label = "Return recipe to pool",key = f'{recipe["key"]}t', on_click=print(True ))
+        
+    with col2:
+        st.subheader("Enter new recipe")
+        with st.form("entry_form", clear_on_submit=True):
+                        
+            st.text_input("Recipe Name:", key="name")
+            "---"
+            st.caption("Please enter ingredient amounts, separated by commas")
+            st.text_area("Ingredients: ", key = "ingredients")
+            "---"
+            st.caption("Please enter instructions, separated by commas")            
+            st.text_area("Instructions: ", key = "instructions")
+            
+            submitted = st.form_submit_button("Save recipe", type = "primary")
+            
+            if submitted:
+                
+                
+                recipe_name = st.session_state["name"].title()
+                #---
+                recipe_ingredients = st.session_state["ingredients"].split(",")
+                recipe_ingredients = [f"- {i.strip()}" for i in recipe_ingredients]
+                #---
+                recipe_instructions = st.session_state["instructions"].split(",")
+                for counter, instruction in enumerate(recipe_instructions, 1):
+                    print(f"{counter}. {instruction.strip().capitalize()}")
+                    recipe_instructions[counter-1] = f"{counter}. {instruction.strip().capitalize()}"
+                #---
+                db.enter_recipe(recipe_name, recipe_ingredients, recipe_instructions)
+                st.succes("Recipe added successfully!")
+            
            
-     
+    with col3:
+        st.subheader("Recipe List: " )
+        for recipe in db.get_recipe_status("b"):
+           with st.expander(recipe["key"]):
+                "---"
+                for ingredient in recipe["ingredients"]:
+                    st.write(ingredient)
+                '---'
+                for instruction in recipe["instructions"]:
+                    st.write(instruction)
+                '---'
+                st.button(label = "Add recipe to current week",key = f'{recipe["key"]}f', on_click=print(True ))
+                st.button(label = "Add ingredients to shopping list", key = f'{recipe["key"]}a', type = "primary")
+    
 
 
 
