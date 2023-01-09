@@ -190,7 +190,7 @@ if nav_menu == "Weekly recipes":
                     recipe_instructions[counter-1] = f"{counter}. {instruction.strip().capitalize()}"
                 #---
                 db.enter_recipe(recipe_name, recipe_ingredients, recipe_instructions)
-                st.succes("Recipe added successfully!")
+                
             
            
     with col3:
