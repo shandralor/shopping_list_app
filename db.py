@@ -3,6 +3,7 @@ import json
 from pprint import pprint
 import os
 
+
 import streamlit as st
 
 
@@ -60,11 +61,24 @@ def get_recipe_status(col_nr = "a"):
                 needed_recipe_list.append(recipe)
     return needed_recipe_list
 
-def get_recipe(key):
-    return recipes.get(key)
-#print((get_active_recipes()))
-
-# for recipe in get_recipes()[0]:
-#     print(recipe["key"])
-
-#enter_recipe("Cheesecake", {"rice" : "200 g", "feta cheese" : "150 g"}, {1 : "cook the rice", 2 : "mix rice with feta"})
+def update_recipe_status(key):
+    to_change= recipes.get(key)
+    if to_change["active"] == False:
+        changed = {"active" : True}
+        recipes.update(changed, key)
+    else:
+        changed = {"active" : False}
+        recipes.update(changed, key)
+       
+    
+def add_ingredients_to_shopping_list(key, weeknumber):
+    ingredients_to_add= recipes.get(key)
+    for ingredient in ingredients_to_add["ingredients"]:
+        shopping_list_update_line = {
+            "shopping_list.snacks.items": sl.util.append(ingredient.strip("-"))
+            }
+    
+        sl.update(shopping_list_update_line, weeknumber)
+        
+        
+#add_ingredients_to_shopping_list("Spaghetti", str(2))

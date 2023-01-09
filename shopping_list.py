@@ -5,6 +5,9 @@ import calendar
 from isoweek import Week
 import db as db
 from pprint import pprint
+import uuid
+
+
 
 #---SETTINGS---#
 page_title = "Weekly dinner and shopping app"
@@ -129,13 +132,13 @@ if nav_menu == "Current Week":
             for k, value in current_shopping_list["shopping_list"].items():
                 #st.subheader(value["title"])
                 for item in value["items"]:
-                    st.button(label = item, on_click=db.remove_item_shopping_list, args= (str(week_number), k, item))
+                    st.button(label = item, key =f"{item}{str(uuid.uuid4())[:8]}", on_click=db.remove_item_shopping_list, args= (str(week_number), k, item))
                 
         else:
             st.subheader(f"You have not created a shopping list yet for week from Thursday {week.thursday()} to Wednesday {week_plus1.wednesday()}")
             
 if nav_menu == "Weekly recipes":
-    col1, col2, col3 = st.columns([3,3,4], gap = "medium")
+    col1, col2, col3 = st.columns([4,4,2], gap = "medium")
     
     
     with col1:
@@ -147,8 +150,16 @@ if nav_menu == "Weekly recipes":
         else:
             for recipe in db.get_recipe_status():
                 with st.expander(recipe["key"]):
-                    st.write("expander test working")
-                    st.button(label = "Return recipe to pool",key = f'{recipe["key"]}t', on_click=print(True ))
+                    "---"
+                    for ingredient in recipe["ingredients"]:
+                        st.write(ingredient)
+                    '---'
+                    for instruction in recipe["instructions"]:
+                        st.write(instruction)
+                    '---'
+                    st.button(label = "Remove recipe from current week",key = f'{recipe["key"]}t', on_click=db.update_recipe_status, args=(recipe["key"],))
+                    st.button(label = "Add ingredients to shopping list", key = f'{recipe["key"]}a', on_click=db.add_ingredients_to_shopping_list , args=(recipe["key"], str(week_number)),type = "primary")
+        
         
     with col2:
         st.subheader("Enter new recipe")
@@ -184,16 +195,9 @@ if nav_menu == "Weekly recipes":
     with col3:
         st.subheader("Recipe List: " )
         for recipe in db.get_recipe_status("b"):
-           with st.expander(recipe["key"]):
-                "---"
-                for ingredient in recipe["ingredients"]:
-                    st.write(ingredient)
-                '---'
-                for instruction in recipe["instructions"]:
-                    st.write(instruction)
-                '---'
-                st.button(label = "Add recipe to current week",key = f'{recipe["key"]}f', on_click=print(True ))
-                st.button(label = "Add ingredients to shopping list", key = f'{recipe["key"]}a', type = "primary")
+            st.button(label = recipe["key"],key = f'{recipe["key"]}f', on_click=db.update_recipe_status, args=(recipe["key"],))
+                
+                
     
 
 
