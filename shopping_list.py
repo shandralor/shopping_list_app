@@ -1,11 +1,16 @@
+#---PIP PACKAGES---#
 import streamlit as st
 from streamlit_option_menu import option_menu
+from isoweek import Week
+
+#---BUILT-IN PYTHON MODULES
 from datetime import datetime, date
 import calendar
-from isoweek import Week
-import db as db
 from pprint import pprint
 import uuid
+
+#---IMPORT PYTHON FILE IN SAME DIR---#
+import db as db
 
 
 

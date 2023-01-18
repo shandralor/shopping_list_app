@@ -2,13 +2,9 @@ from deta import Deta
 import json
 from pprint import pprint
 import os
-
-
 import streamlit as st
 
-
 DETA_KEY = st.secrets.DETA_KEY
-
 deta = Deta(DETA_KEY)
 
 sl = deta.Base("sl")
@@ -81,4 +77,3 @@ def add_ingredients_to_shopping_list(key, weeknumber):
         sl.update(shopping_list_update_line, weeknumber)
         
         
-#add_ingredients_to_shopping_list("Spaghetti", str(2))
