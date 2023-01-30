@@ -1,7 +1,5 @@
 from deta import Deta
-import json
 from pprint import pprint
-import os
 import streamlit as st
 
 DETA_KEY = st.secrets.DETA_KEY

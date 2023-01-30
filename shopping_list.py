@@ -37,6 +37,10 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 year = datetime.today().year
 month = datetime.today().month
 day = datetime.today().day+4
+if day > calendar.monthrange(year, month)[1]:
+    day =calendar.monthrange(year, month)[1] -calendar.monthrange(year, month+1)[1]
+    month +=1
+    print(day)
 months = list(calendar.month_name[1:])
 week_number = date(year, month, day).isocalendar()[1]
 week = Week(year, week_number)
